@@ -11,7 +11,6 @@
 #include <stdlib.h>
 #include <time.h>
 #include <fstream>
-#include <string.h>
 
 using namespace std;
 
@@ -21,8 +20,8 @@ double number;
 double generateNoOfTrials = 0;
 ofstream myfile;
 string filename;
-int inputSize = 0;
-int noOfLoops = 0;
+int inputSize = 0; // how big we want our random generator to be
+int noOfLoops = 0; // how many number of loops that we need to do
 void initRandomGenerator() {
     seedValue = time(0);
     srand(seedValue);
