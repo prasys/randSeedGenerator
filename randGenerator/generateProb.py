@@ -23,20 +23,44 @@ from sklearn.model_selection import cross_val_score, cross_val_predict
 from sklearn.svm import LinearSVC , SVC
 from sklearn import preprocessing
 from sklearn.metrics import f1_score , recall_score , accuracy_score , precision_score , jaccard_score , balanced_accuracy_score, confusion_matrix
-from mlxtend.plotting import plot_decision_regions, plot_confusion_matrix
-from matplotlib import pyplot as plt
-from sklearn.neighbors import KNeighborsClassifier , RadiusNeighborsClassifier
-import nltk
-from nltk.tokenize import RegexpTokenizer
-from gensim.models.doc2vec import Doc2Vec, TaggedDocument
-from imblearn.pipeline import make_pipeline
-from collections import Counter
-from imblearn.over_sampling import SMOTE
-from imblearn.under_sampling import NearMiss
 import string
-import xgboost as xgb
 
 
+LOCATIONOFFILES="/Users/pradeesh/test"
+TRUTHFILELOCATION = "train_22.csv"
+COLUMNNAME = "Label"
+
+
+
+def FoldValidate(original,truth,iter=3):
+  Val = StratifiedKFold(n_splits=iter, random_state=STATE, shuffle=True) # DO OUR FOLD here , maybe add the iteration
+  truth = numpy.asarray(truth) # convert to numpy array
+  scores = []
+  tns = [] # true neg
+  fps = [] # false positive
+  fns = [] # false negative
+  tps = [] # true positive
+  for train_index,test_index in Val.split(original,truth):
+    #scores.append(classifier.score(x_output, truth[test_index]))
+    tn, fp , fn , tp = confusion_matrix(original[test_index], truth[test_index]).ravel()
+    score = accuracy_score(x_output,truth[test_index])
+    tns.append(tn)
+    fps.append(fp)
+    fns.append(fn)
+    tps.append(tp)
+    scores.append(score)
+
+  print("TP is,",numpy.mean(tps))
+  print("FP is,",numpy.mean(fps))
+  print("FN is,",numpy.mean(fns))
+  print("TN is,",numpy.mean(tns))
+  print("Avg Accuracy is,",numpy.mean(scores))
+
+
+def getTruthLabel(filepath,columnName):
+    df = readCSV(filepath)
+    truthLabel = df[columnName].values
+    return truthLabel
 
 
 def read_csv(filepath):
@@ -50,13 +74,23 @@ def read_csv(filepath):
 
 
 def read_txt(filepath):
+    os.chdir(LOCATIONOFFILES) ## just making sure we change it , i think it shouldn't be repeated , but yeah 
 	f = open(filename,'r')
 	x = f.readlines()
 	f.close()
 	return x
 
-
+# Inspired By https://stackoverflow.com/questions/3964681/find-all-files-in-a-directory-with-extension-txt-in-python
 def getAllTxtFiles(path):
-
+    os.chdir(LOCATIONOFFILES)
+    files = glob.glob("*.txt")
+    return files
 
 if __name__ == '__main__':
+    files = getAllTxtFiles(LOCATIONOFFILES)
+    truthLabel = (TRUTHFILELOCATION,COLUMNNAME)
+    for file in files:
+        generated = read_txt(file)
+        FoldValidate(truthLabel,generated)
+
+
