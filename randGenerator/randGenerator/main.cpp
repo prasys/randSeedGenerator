@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <fstream>
+#include <string.h>
 
 using namespace std;
 
@@ -48,8 +49,8 @@ int main(int argc, const char * argv[]) {
 //double number=(double)rand()/((double)RAND_MAX+1);
     
     if (argc > 2) {
-        inputSize = (int)*argv[1];
-        noOfLoops = (int)*argv[2];
+        inputSize = atoi(argv[1]);
+        noOfLoops = atoi(argv[2]);
         cout << inputSize << endl;
         cout << noOfLoops << endl;
     }
@@ -67,7 +68,7 @@ int main(int argc, const char * argv[]) {
             else {
                 prob = 0;
             }
-            cout << prob << endl;
+          // cout << prob << endl;
             myfile << prob;
         }
         myfile.close();
