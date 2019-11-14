@@ -69,7 +69,7 @@ unsigned long mix(unsigned long a, unsigned long b, unsigned long c)
 
 void initRandomGenerator() {
     //seedValue = time(0);
-    seedValue = mix(clock(), time(0), getpid());
+    seedValue = mix(clock(),getpid(),time(0));
     srand(seedValue);
     
 }
@@ -115,7 +115,7 @@ int main(int argc, const char * argv[]) {
                 prob = 0;
             }
           // cout << prob << endl;
-            myfile << prob;
+            myfile << prob << endl;
         }
         myfile.close();
        // delay(1000);
